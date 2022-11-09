@@ -51,30 +51,32 @@ public class App {
     }
     // metodo para imprimir el mensaje
 
-    public static void loading(){
-        System.out.print("Creando el código de Hamming---------");
-        for(int i=0;i <= 100;i++){
-            if(i < 10){
-                System.out.print(i+"%");
+    public static void loading() {
+        System.out.print("Creando el código con Hamming---------");
+        for (int i = 0; i <= 100; i++) {
+            if (i < 10) {
+                System.out.print(i + "%");
                 System.out.print("\b\b");
-            }
-            else if(i >= 10 && i <= 99){
-                System.out.print(i+"%");
+            } else if (i >= 10 && i <= 99) {
+                System.out.print(i + "%");
                 System.out.print("\b\b\b");
             }
-            if (i == 100){
-                System.out.println(i+"%"); 
+            if (i == 100) {
+                System.out.println(i + "%");
             }
-                try{Thread.sleep(50);} catch (Exception e){}
+            try {
+                Thread.sleep(15);
+            } catch (Exception e) {
+            }
         }
 
     }
     // metodo para mostrar una barra de carga
 
-    public static void clearScreen() {  
-        System.out.print("\033[H\033[2J");  
-        System.out.flush();  
-    }  
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
     // metodo para limpiar la pantalla
 
     public static int[] rellenar_paridad(int duracion, int[] arr) {
@@ -209,8 +211,8 @@ public class App {
     }
     // metodo para sacar la paridad de los bits
 
-    public static int[] hamming(int[] mensaje, int[] arr, int total_array) {
-        int[] x = paridad(rellenar_paridad(total_array, arr), arr);
+    public static int[] sender(int[] mensaje, int[] arr, int total_array) {
+        int[] x = paridad(mensaje, arr);
         if (bit_global(x)) {
             x[0] = 0;
         } else {
@@ -227,6 +229,49 @@ public class App {
 
     public static final String ANSI_RESET = "\u001B[0m";
     // reset
+
+    public static int errores_noise() {
+        Random rnd = new Random();
+
+        int cantidad = rnd.nextInt(3);
+        return cantidad;
+    }
+    // metodo para hacer la cantidad de errores
+
+    public static int [] noise(int[] arr){
+
+        Random rnd = new Random();
+        int cantidad = errores_noise();
+        int longitud = arr.length - 1;
+        if (cantidad == 0){
+            return arr;
+        }
+        if (cantidad == 1){
+            int ubicacion = rnd.nextInt(longitud);
+            if (arr[ubicacion] == 1){
+                arr[ubicacion] = 0;
+            }
+            else{
+                arr[ubicacion] = 1;
+            }
+        }
+        if (cantidad == 2){
+            for (int i = 0; i<2;i++){
+                int ubicacion = rnd.nextInt(longitud);
+                if (arr[ubicacion] == 1){
+                    arr[ubicacion] = 0;
+                }
+                else{
+                    arr[ubicacion] = 1;
+                }
+            }
+        }
+
+
+
+        return arr;
+    }
+    // metodo para hacer alteraciones en el codigo
 
     public static void main(String[] args) throws InterruptedException {
         clearScreen();
@@ -245,8 +290,8 @@ public class App {
         print_mensaje(arr);
         Thread.sleep(2000);
         loading();
-        System.out.println("Código con Hamming: ");
-        print_mensaje_correcto(hamming(rellenar_paridad(total_array, arr), arr, total_array));
+        System.out.println("Código con hamming del sender: ");
+        print_mensaje_correcto(sender(rellenar_paridad(total_array, arr), arr, total_array));
 
     } // main
 }
