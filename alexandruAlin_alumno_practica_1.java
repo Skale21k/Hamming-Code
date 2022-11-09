@@ -42,6 +42,41 @@ public class App {
     }
     // metodo para printear el mensaje
 
+    public static void print_mensaje(int[] mensaje) {
+
+        for (int i = 0; i < mensaje.length; i++) {
+            System.out.print(mensaje[i] + " ");
+        }
+        System.out.println("");
+    }
+    // metodo para imprimir el mensaje
+
+    public static void loading(){
+        System.out.print("Creando el código de Hamming---------");
+        for(int i=0;i <= 100;i++){
+            if(i < 10){
+                System.out.print(i+"%");
+                System.out.print("\b\b");
+            }
+            else if(i >= 10 && i <= 99){
+                System.out.print(i+"%");
+                System.out.print("\b\b\b");
+            }
+            if (i == 100){
+                System.out.println(i+"%"); 
+            }
+                try{Thread.sleep(50);} catch (Exception e){}
+        }
+
+    }
+    // metodo para mostrar una barra de carga
+
+    public static void clearScreen() {  
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+    }  
+    // metodo para limpiar la pantalla
+
     public static int[] rellenar_paridad(int duracion, int[] arr) {
         int[] mensajes = new int[duracion];
         int a = 0;
@@ -193,8 +228,8 @@ public class App {
     public static final String ANSI_RESET = "\u001B[0m";
     // reset
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws InterruptedException {
+        clearScreen();
         Scanner read = new Scanner(System.in);
         Random rnd = new Random();
         System.out.print("Introduce la duración del mensaje: ");
@@ -206,6 +241,11 @@ public class App {
 
         int total_array = arr.length + bits_paridad(arr);
 
+        System.out.println("Datos del mensaje: ");
+        print_mensaje(arr);
+        Thread.sleep(2000);
+        loading();
+        System.out.println("Código con Hamming: ");
         print_mensaje_correcto(hamming(rellenar_paridad(total_array, arr), arr, total_array));
 
     } // main
