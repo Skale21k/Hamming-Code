@@ -269,16 +269,14 @@ public class App {
     }
     // metodo para hacer la cantidad de errores
 
-    public static int[] noise(int[] arr) {
+    public static int[] noise(int[] arr, int cantidad, int ubicacion) {
 
         Random rnd = new Random();
-        int cantidad = errores_noise();
         int longitud = arr.length - 1;
         if (cantidad == 0) {
             return arr;
         }
         if (cantidad == 1) {
-            int ubicacion = rnd.nextInt(longitud);
             if (arr[ubicacion] == 1) {
                 arr[ubicacion] = 0;
             } else {
@@ -287,7 +285,6 @@ public class App {
         }
         if (cantidad == 2) {
             for (int i = 0; i < 2; i++) {
-                int ubicacion = rnd.nextInt(longitud);
                 if (arr[ubicacion] == 1) {
                     arr[ubicacion] = 0;
                 } else {
@@ -361,6 +358,13 @@ public class App {
         }
         a = 0;
 
+        if(bit_global(mensaje)){
+            mensaje[0] = 0;
+        }
+        else{
+            mensaje[0] = 1;
+        }
+
         return mensaje;
 
     }
@@ -403,7 +407,12 @@ public class App {
         } // for rellenar el array
 
         int total_array = arr.length + bits_paridad(arr);
-        int[] a = noise(sender(rellenar_paridad(total_array, arr), arr, total_array));
+        int cantidad = 1;
+        int ubi = rnd.nextInt(total_array - 1);
+        int[] a = noise(sender(rellenar_paridad(total_array, arr), arr, total_array), cantidad, ubi);
+        int error = ubicacionerror(receiver(
+                paridad_noise(noise(sender(rellenar_paridad(total_array, arr), arr, total_array), cantidad, ubi)),
+                noise(sender(rellenar_paridad(total_array, arr), arr, total_array), cantidad, ubi)));
 
         System.out.println("Datos del mensaje: ");
         print_mensaje(arr);
@@ -411,8 +420,9 @@ public class App {
         loading();
         System.out.println("Código con hamming del sender: ");
         print_mensaje_correcto(sender(rellenar_paridad(total_array, arr), arr, total_array));
-        print_error(paridad_noise(a), ubicacionerror(receiver(paridad_noise(a), sender(rellenar_paridad(total_array, arr), arr, total_array))));
-        System.out.println(ubicacionerror(receiver(paridad_noise(a), sender(rellenar_paridad(total_array, arr), arr, total_array))));
+        print_error(a, error);
+        print_mensaje_correcto(paridad_noise(a));
+        System.out.println(error);
 
     } // main
 }
