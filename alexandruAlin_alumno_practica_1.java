@@ -1,27 +1,9 @@
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class App {
 
-    public static int bits_paridad(int[] arr) {
-
-        int a = 1;
-
-        String paridad = Integer.toBinaryString(arr.length);
-
-        a = a + paridad.length();
-
-        int total_array = arr.length + a;
-
-        paridad = Integer.toBinaryString(total_array);
-
-        int bits_paridad = paridad.length() + 1;
-
-        return bits_paridad;
-
-    }
-    // metodo bits paridad
+    // LAS PRIMERAS 107 LINEAS SON DE METODOS PARA HACER BONITO
 
     public static void print_mensaje_correcto(int[] xxx) {
         for (int i = 0; i < xxx.length; i++) {
@@ -42,6 +24,7 @@ public class App {
         }
         System.out.println("");
     }
+    // metodo que printea con color verde los bits de paridad
 
     public static void print_error(int[] mensaje, int ubicacion_error) {
         for (int i = 0; i < mensaje.length; i++) {
@@ -73,6 +56,7 @@ public class App {
         }
         System.out.println("");
     }
+    // metodo que printea con color rojo los errores y verde los de paridad
 
     public static void print_mensaje(int[] mensaje) {
 
@@ -81,7 +65,7 @@ public class App {
         }
         System.out.println("");
     }
-    // metodo para imprimir el mensaje
+    // metodo para imprimir el array
 
     public static void loading() {
         System.out.print("Creando el código con Hamming---------");
@@ -103,12 +87,43 @@ public class App {
         }
 
     }
+    // metodo que muestra un proceso de carga
 
     public static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
     // metodo para limpiar la pantalla
+    
+    public static final String ANSI_GREEN = "\u001B[32m";
+    // verde
+
+    public static final String ANSI_RED = "\u001B[31m";
+    // rojo
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    // reset
+
+    // A PARTIR DE AQUI EMPIEZA EL CÓDIGO ÚTIL
+
+    public static int bits_paridad(int[] arr) {
+
+        int a = 1;
+
+        String paridad = Integer.toBinaryString(arr.length);
+
+        a = a + paridad.length();
+
+        int total_array = arr.length + a;
+
+        paridad = Integer.toBinaryString(total_array);
+
+        int bits_paridad = paridad.length() + 1;
+
+        return bits_paridad;
+
+    }
+    // metodo que saca la cantidad de paridad
 
     public static int[] rellenar_paridad(int duracion, int[] arr) {
         int[] mensajes = new int[duracion];
@@ -162,11 +177,8 @@ public class App {
     // metodo calcular bit global
 
     public static int[] paridad(int mensaje[], int[] arr) {
-        int[] mensaje2 = new int[mensaje.length];
-        String[][] bits_de_paridad = new String[bits_paridad(arr) - 1][];
         int[] binarios = new int[mensaje.length];
         int a = 0;
-        int b = 0;
         int posicion = 0;
 
         for (int i = 0; i < mensaje.length; i++) {
@@ -221,7 +233,6 @@ public class App {
                 }
             }
         }
-        a = 0;
         for (int i = 0; i < mensaje.length; i++) {
             int h = 0;
             for (int k = 0; k < mensaje.length; k++) {
@@ -251,15 +262,6 @@ public class App {
         }
         return x;
     }
-
-    public static final String ANSI_GREEN = "\u001B[32m";
-    // verde
-
-    public static final String ANSI_RED = "\u001B[31m";
-    // rojo
-
-    public static final String ANSI_RESET = "\u001B[0m";
-    // reset
 
     public static int errores_noise() {
         Random rnd = new Random();
