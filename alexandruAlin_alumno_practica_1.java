@@ -39,8 +39,39 @@ public class App {
                 h++;
             }
         }
+        System.out.println("");
     }
-    // metodo para printear el mensaje
+
+    public static void print_error(int[] mensaje, int ubicacion_error) {
+        for (int i = 0; i < mensaje.length; i++) {
+            int w = 0;
+            int h = 0;
+            for (int k = 0; k < mensaje.length; k++) {
+                if (i == 0 || Math.pow(2, k) == i) {
+                    if (i == ubicacion_error) {
+                        System.out.print(ANSI_RED + mensaje[i] + ANSI_RESET + " ");
+                        w++;
+                        h++;
+                        break;
+                    } else {
+                        System.out.print(ANSI_GREEN + mensaje[i] + ANSI_RESET + " ");
+                        w++;
+                        h++;
+                        break;
+                    }
+                }
+            }
+            if (w == 0)
+                if (i == ubicacion_error) {
+                    System.out.print(ANSI_RED + mensaje[i] + ANSI_RESET + " ");
+                    h++;
+                } else {
+                    System.out.print(mensaje[i] + " ");
+                    h++;
+                }
+        }
+        System.out.println("");
+    }
 
     public static void print_mensaje(int[] mensaje) {
 
@@ -71,7 +102,6 @@ public class App {
         }
 
     }
-    // metodo para mostrar una barra de carga
 
     public static void clearScreen() {
         System.out.print("\033[H\033[2J");
@@ -131,11 +161,8 @@ public class App {
     // metodo calcular bit global
 
     public static int[] paridad(int mensaje[], int[] arr) {
-        int[] mensaje2 = new int[mensaje.length];
-        String[][] bits_de_paridad = new String[bits_paridad(arr) - 1][];
         int[] binarios = new int[mensaje.length];
         int a = 0;
-        int b = 0;
         int posicion = 0;
 
         for (int i = 0; i < mensaje.length; i++) {
@@ -181,25 +208,24 @@ public class App {
 
                     } // recorre todos los números con la misma posición para sumarlos
                     if (suma % 2 == 0) {
-                        mensaje2[i] = 0;
+                        mensaje[i] = 0;
                     } else {
-                        mensaje2[i] = 1;
+                        mensaje[i] = 1;
                     }
                     binarios = new int[mensaje.length];
                     break;
                 }
             }
         }
-        a = 0;
-        for (int i = 0; i < mensaje2.length; i++) {
+        for (int i = 0; i < mensaje.length; i++) {
             int h = 0;
-            for (int k = 0; k < mensaje2.length; k++) {
+            for (int k = 0; k < mensaje.length; k++) {
                 if (i == 0 || Math.pow(2, k) == i) {
                     h++;
                 }
             }
             if (h == 0) {
-                mensaje2[i] = arr[a];
+                mensaje[i] = arr[a];
                 if (a != arr.length) {
                     a++;
                 }
@@ -207,7 +233,7 @@ public class App {
             }
         }
 
-        return mensaje2;
+        return mensaje;
     }
     // metodo para sacar la paridad de los bits
 
@@ -233,45 +259,143 @@ public class App {
     public static int errores_noise() {
         Random rnd = new Random();
 
-        int cantidad = rnd.nextInt(3);
+        int cantidad = 1;
         return cantidad;
     }
     // metodo para hacer la cantidad de errores
 
-    public static int [] noise(int[] arr){
+    public static int[] noise(int[] arr, int cantidad, int []ubicacion) {
 
-        Random rnd = new Random();
-        int cantidad = errores_noise();
-        int longitud = arr.length - 1;
-        if (cantidad == 0){
+        if (cantidad == 0) {
             return arr;
         }
-        if (cantidad == 1){
-            int ubicacion = rnd.nextInt(longitud);
-            if (arr[ubicacion] == 1){
-                arr[ubicacion] = 0;
-            }
-            else{
-                arr[ubicacion] = 1;
+        if (cantidad == 1) {
+            if (arr[ubicacion[0]] == 1) {
+                arr[ubicacion[0]] = 0;
+            } else {
+                arr[ubicacion[0]] = 1;
             }
         }
-        if (cantidad == 2){
-            for (int i = 0; i<2;i++){
-                int ubicacion = rnd.nextInt(longitud);
-                if (arr[ubicacion] == 1){
-                    arr[ubicacion] = 0;
-                }
-                else{
-                    arr[ubicacion] = 1;
+        if (cantidad == 2) {
+            for (int i = 0; i < 2; i++) {
+                if (arr[ubicacion[i]] == 1) {
+                    arr[ubicacion[i]] = 0;
+                } 
+                else {
+                    arr[ubicacion[i]] = 1;
                 }
             }
         }
-
-
 
         return arr;
     }
     // metodo para hacer alteraciones en el codigo
+
+    public static int[] paridad_noise(int[] mensaje) {
+
+        int[] mensaje2 = mensaje;
+        if(bit_global(mensaje2)){
+            mensaje2[0] = 0;
+        }
+        else{
+            mensaje2[0] = 1;
+        }
+        int[] binarios = new int[mensaje.length];
+        int a = 0;
+        int b = 0;
+        int posicion = 0;
+
+        for (int i = 0; i < mensaje2.length; i++) {
+            a = 0;
+            for (int k = 0; k < mensaje2.length; k++) {
+                if (Math.pow(2, k) == i) {
+                    int suma = 0;
+                    String abinario = Integer.toBinaryString(i);// convierte el número potencia de 2 en binario
+                    String x = "";
+                    for (int y = abinario.length() - 1; y >= 0; y--) {
+                        x += abinario.charAt(y); // se añade el caracter a la nueva string
+                    } // for que recorre todos los caracteres de la string
+
+                    for (int m = 0; m < x.length(); m++) {
+                        if (x.charAt(m) == '1') {
+                            posicion = m;
+                        } // if es 1 se guarda la posicion
+                    } // recorre el numero potencia de 2 en binario para guardar en qué posicion está
+                      // el 1
+                    for (int m = i; m < mensaje2.length; m++) {
+                        String y = ""; // convierte el número del array en binario
+                        String z = Integer.toBinaryString(m);
+                        for (int q = z.length() - 1; q >= 0; q--) {
+                            y += z.charAt(q); // se añade el caracter a la nueva string
+                        } // for que recorre todos los caracteres de la string
+                        if (m == i) {
+                            continue;
+                        } // if es el mismo número
+                        else {
+                            for (int j = 0; j < y.length(); j++) {
+                                if (y.charAt(j) == '1' && j == posicion) {
+
+                                    binarios[a] = mensaje2[m];
+                                    a++;
+
+                                } // if es un uno y es la misma posicion se guarda la posicion del número
+                            } // recorre el binario
+                        } // if no es el mismo número
+
+                    } // recorre todos los números
+                    for (int m = 0; m < mensaje2.length; m++) {
+                        suma = suma + binarios[m];
+
+                    } // recorre todos los números con la misma posición para sumarlos
+                    if (suma % 2 == 0) {
+                        mensaje2[i] = 0;
+                    } else {
+                        mensaje2[i] = 1;
+                    }
+                    binarios = new int[mensaje2.length];
+                    break;
+                }
+            }
+        }
+        a = 0;
+
+        return mensaje2;
+
+    }
+
+    public static int receiver(int[] mensaje, int[] mensaje_sin_error) {
+
+        int[] error_loca = new int[mensaje.length];
+        int a = 0;
+        for (int i = 0; i < mensaje.length; i++) {
+            for (int k = 0; k < mensaje.length; k++) {
+                if (Math.pow(2, k) == i) {
+                    if (mensaje[i] != mensaje_sin_error[i]) {
+                        error_loca[a] = i;
+                        a++;
+                    }
+                }
+            }
+        }
+        a = 0;
+        for (int i = 0; i < error_loca.length; i++) {
+            a = error_loca[i] + a;
+        }
+
+        if (a == 0){
+            if (mensaje[0] != mensaje_sin_error[0]){
+                a = -1;
+            }
+        }
+        else{
+            if (mensaje[0] == mensaje_sin_error[0]){
+                a = -2;
+            }
+        }
+
+        return a;
+    }
+    // metodo para saber donde está el error
 
     public static void main(String[] args) throws InterruptedException {
         clearScreen();
@@ -285,6 +409,19 @@ public class App {
         } // for rellenar el array
 
         int total_array = arr.length + bits_paridad(arr);
+        int cantidad = rnd.nextInt(3);
+        int[] ubi = new int[total_array];
+        if (cantidad == 1){
+            ubi[0] = rnd.nextInt(total_array-1);
+        }
+        if (cantidad == 2){
+            ubi[0] = rnd.nextInt(total_array-1);
+            ubi[1] = rnd.nextInt(total_array-1);
+        }
+        int[] a = noise(sender(rellenar_paridad(total_array, arr), arr, total_array), cantidad, ubi);
+        int error =receiver(
+                paridad_noise(noise(sender(rellenar_paridad(total_array, arr), arr, total_array), cantidad, ubi)),
+                noise(sender(rellenar_paridad(total_array, arr), arr, total_array), cantidad, ubi));
 
         System.out.println("Datos del mensaje: ");
         print_mensaje(arr);
@@ -292,6 +429,24 @@ public class App {
         loading();
         System.out.println("Código con hamming del sender: ");
         print_mensaje_correcto(sender(rellenar_paridad(total_array, arr), arr, total_array));
+        System.out.println("Código recibido:");
+        if(error == -2){
+            print_mensaje_correcto(a);
+            System.out.println("Han habido dos errores.");
+        }
+        else if (error == -1){
+            print_error(a, 0);
+            System.out.println("Ha habido un error en el bit global.");
+        }
+        else if (error == 0){
+            print_mensaje_correcto(a);
+            System.out.println("No ha habido ningún error.");
+        }
+        else{
+            print_error(a, error);
+            System.out.println("Ha habido un error en la posición "+error);
+        }
+    
 
     } // main
 }
